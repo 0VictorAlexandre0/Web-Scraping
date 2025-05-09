@@ -19,22 +19,19 @@ resposta['categories'] = [a.get_text(strip=True)
 resposta['description'] = [p.get_text(strip=True) 
     for p in parsed_html.select('div.proddet p')]
 
-skus = []
-for bloco in parsed_html.select('div.sku'):
-    nome = bloco.select_one('span.sku-name').get_text(strip=True)
-    skus.append(nome)
+resposta['skus'] = [name.get_text(strip=True)
+    for name in parsed_html.select('div.prod-nome')], [current_price.get_text(strip=True)
+        for current_price in parsed_html.select('div.prod-pnow')], [old_price.get_text(strip=True)
+            for old_price in parsed_html.select('div.prod-pold')], [i.get_text(strip=True)
+                for i in parsed_html.select('div.card-container i')]
 
-resposta['skus'] = skus
-
-
-
-
-
+resposta['properties'] = [td.get_text(strip=True)
+    for td in parsed_html.select('table.pure-table td')]
 
 
 json_resposta_final = json.dumps(resposta)
 
 
-with open('teste.json', 'w') as arquivo_json:
+with open('produto.json', 'w') as arquivo_json:
     json.dump(resposta, arquivo_json, ensure_ascii=False, indent=2)
 
